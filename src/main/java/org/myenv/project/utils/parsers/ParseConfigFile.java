@@ -1,33 +1,42 @@
 package org.myenv.project.utils.parsers;
 
 import org.json.*;
-import org.myenv.project.model.Application;
+import org.myenv.project.model.Config;
 import org.myenv.project.model.OS;
+import org.myenv.project.utils.os.OSUtil;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
 
 public class ParseConfigFile {
 
     File configFile;
-    Map<OS, List<Application>> applications;
 
     public ParseConfigFile(File configFile) {
         this.configFile = configFile;
     }
 
-    public void parseJsonFile() throws IOException {
-            Path filePath = Paths.get(configFile.getPath());
-            String fileContent = Files.readString(filePath);
-//            String replaced = fileContent.replaceFirst("\s+[A-z]+\s+$", "Mata-i Grasa");
-            JSONObject jsonFile = new JSONObject(fileContent);
-
-            System.out.println(jsonFile);
+    public Config parseConfigFile() throws IOException {
+        Path filePath = Paths.get(configFile.getPath());
+        String fileContent = Files.readString(filePath);
+        JSONObject jsonFile = new JSONObject(fileContent);
+        OS os = OS.valueOf(OSUtil.OS.toUpperCase());
+        Config config = new Config()
+            .withOperatingSystem(os)
+            .withGitBaseUrl(URI.create(jsonFile.getString("gitBaseURL")));
+        JSONObject osJsonObject = jsonFile.getJSONObject("os");
+        config
+            .withUser(osJsonObject.getJSONObject(os.toString()).getString("user"))
+            .withApplications(
+                ParseApplication.parseApps( config.getGitBaseUrl(), config.getOperatingSystem(),
+                        osJsonObject.getJSONObject(os.toString()).getJSONArray("applications")));
+        return config;
     }
+
+
 
 
 }

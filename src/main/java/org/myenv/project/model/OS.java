@@ -8,7 +8,7 @@ public enum OS {
 
     private final String name;
     
-    private OS(String osName) {
+    OS(String osName) {
         this.name = osName;
     }
     
