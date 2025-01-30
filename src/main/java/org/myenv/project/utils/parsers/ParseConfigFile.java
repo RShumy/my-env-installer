@@ -23,16 +23,16 @@ public class ParseConfigFile {
         Path filePath = Paths.get(configFile.getPath());
         String fileContent = Files.readString(filePath);
         JSONObject jsonFile = new JSONObject(fileContent);
-        OS os = OS.valueOf(OSUtil.OS.toUpperCase());
+        OS osEnum = OSUtil.os;
         Config config = new Config()
-            .withOperatingSystem(os)
+            .withOperatingSystem(osEnum)
             .withGitBaseUrl(URI.create(jsonFile.getString("gitBaseURL")));
         JSONObject osJsonObject = jsonFile.getJSONObject("os");
         config
-            .withUser(osJsonObject.getJSONObject(os.toString()).getString("user"))
+            .withUser(osJsonObject.getJSONObject(osEnum.toString()).getString("user"))
             .withApplications(
                 ParseApplication.parseApps( config.getGitBaseUrl(), config.getOperatingSystem(),
-                        osJsonObject.getJSONObject(os.toString()).getJSONArray("applications")));
+                        osJsonObject.getJSONObject(osEnum.toString()).getJSONArray("applications")));
         return config;
     }
 

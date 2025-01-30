@@ -15,10 +15,10 @@ import static org.myenv.project.model.AppPathType.LOCATION;
 
 class ParseApplication {
 
-    static Application parseApp(URI gitBaseURL, OS os,
+    static Application parseApp(URI gitBaseURL, OS osEnum,
                              JSONObject jsonObject) {
         Application application = new Application()
-                .withOperatingSystem( os )
+                .withOperatingSystem(osEnum)
                 .withName(
                     Optional.ofNullable(jsonObject.getString("name")).orElse("")
                 );
@@ -53,12 +53,12 @@ class ParseApplication {
         return appPaths;
     }
 
-    static List<Application> parseApps(URI gitBaseURL, OS os, JSONArray jsonArray) {
+    static List<Application> parseApps(URI gitBaseURL, OS osEnum, JSONArray jsonArray) {
         List<Application> apps = new ArrayList<>();
         jsonArray.forEach(
                 jsonObject ->
                         apps.add(
-                                parseApp(gitBaseURL, os, (JSONObject) jsonObject)
+                                parseApp(gitBaseURL, osEnum, (JSONObject) jsonObject)
                         ));
         return apps;
     }
