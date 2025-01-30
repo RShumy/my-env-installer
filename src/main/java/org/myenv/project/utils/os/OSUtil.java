@@ -1,20 +1,26 @@
 package org.myenv.project.utils.os;
 
+import org.myenv.project.model.OS;
+
 public class OSUtil {
 
-    public static String OS = getGeneralOS();
+    public static final OS os = getGeneralOS();
 
-    private static String getGeneralOS() {
+    private static OS getGeneralOS() {
         String osName = getOSName();
         if (osName.contains("window")) {
-            return "windows";
+            return OS.WINDOWS;
         }
         if (osName.contains("mac")) {
-            return "macOS";
+            return OS.MACOS;
         }
         if (osName.contains("linux")) {
-            return "linux";
-        } else return "unix";
+            return OS.LINUX;
+        }
+        if (osName.contains("unix")) {
+            return OS.UNIX;
+        }
+        else return OS.valueOf("unknown".toUpperCase());
     }
 
     private static String getOSName() {
@@ -22,14 +28,14 @@ public class OSUtil {
     }
 
     private static boolean isWindows() {
-        return (OS.equals("windows"));
+        return (os.toString().equals("windows"));
     }
 
     private static boolean isMacOS() {
-        return (OS.equals("macOS"));
+        return (os.toString().equals("macOS"));
     }
 
     private static boolean isLinux() {
-        return (OS.equals("linux"));
+        return (os.toString().equals("linux"));
     }
 }
