@@ -1,12 +1,8 @@
 package org.myenv.project.model;
 
 import lombok.Data;
+import org.myenv.project.utils.properties.ConfigProperties;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.Properties;
 
 @Data
@@ -16,20 +12,7 @@ public class PackageManager {
     private String installURL;
     private String command;
 
-    private static final Properties properties = new Properties();
-
-    // Load properties once at startup
-    static {
-        try (InputStream input = PackageManager.class.getClassLoader()
-                                .getResourceAsStream("packageManagerDefaults.properties")) {
-            if (input == null) {
-                throw new RuntimeException("Unable to find packageManagerDefaults.properties");
-            }
-            properties.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading properties file", e);
-        }
-    }
+    private Properties properties = ConfigProperties.packageManager;
 
     PackageManager(OS os) {
         String osName = os.toString();
