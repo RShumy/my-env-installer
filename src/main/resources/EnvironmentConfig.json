@@ -1,0 +1,62 @@
+{
+  "gitBaseURL": "https://www.github.com/",
+  "os" : {
+    "windows": {
+      "user": "razva",
+      "applications": [
+        { "name": "neovim",
+          "destination":  "%UserPath%/AppData/Local/nvim/",
+          "gitRepo": "RShumy/nvim-config",
+          "location" : "*"
+        },
+        { "name": "mingw" },
+        { "name": "Lua" },
+        { "name": "npm",
+          "destination" : "%UserPath%",
+          "gitRepo": "RShumy/dotfiles",
+          "location": "./.npmrc"
+        },
+        { "name": "ssh",
+          "justConfig": true,
+          "destination": "C:/ProgramData/ssh",
+          "gitRepo": "RShumy/dotfiles",
+          "location": "./sshd_config"
+        },
+        { "name": "maven" }
+      ],
+      "fonts" : {
+        "type" : "folder-fonts",
+        "gitRepo": "RShumy/dotfiles",
+        "location": ".local/share/fonts"
+      }
+  },
+    "linux": {
+      "user": "shumy",
+      "applications" : [
+        { "name": "neovim", 
+          "destination": "$HOME/.config/nvim",
+          "gitRepo": "RShumy/nvim-config",
+          "location": "*"
+        },
+        { "name": "lua" },
+        { "name": "zsh",
+          "destination": "$HOME",
+          "gitRepo": "RShumy/dotfiles",
+          "location": "./.zshrc"
+        },
+        { "name": "zsh-syntax-highlighting" },
+        { "name": "zsh_theme",
+          "JustConfig": true,
+          "destination": "$HOME/zsh_theme/shumy_theme",
+          "gitRepo": "RShumy/dotfiles",
+          "location": "./zsh_theme/"
+        },
+        { "name": "tmux",
+          "destination": "$HOME",
+          "gitRepo": "RShumy/dotfiles",
+          "location": "./.tmux.conf"
+        }
+      ]
+    }
+  }
+}
