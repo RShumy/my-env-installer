@@ -11,10 +11,25 @@
     <properties>
         <maven-jar.version>3.4.2</maven-jar.version>
         <lombok.version>1.18.34</lombok.version>
+        <json.version>20250107</json.version>
+        <junit.version>5.11.0</junit.version>
+        <surefire.version>3.0.0-M5</surefire.version>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -26,7 +41,18 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20250107</version>
+            <version>${json.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Optionally: parameterized tests support -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -44,6 +70,17 @@
                                 <mainClass>org.myenv.project.App</mainClass>
                             </manifest>
                         </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>$</version>
+                    <configuration>
+                        <argLine>--illegal-access=permit</argLine>
+                        <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                        <argLine>--add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED</argLine>
+                        <argLine>-Dillegal-access=permit</argLine>
                     </configuration>
                 </plugin>
             </plugins>

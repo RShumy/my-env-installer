@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @Data
-public class GitConfigRepo {
+public class GitRepo {
 
     private URI baseURL;
     private String repoURL;
@@ -14,16 +14,16 @@ public class GitConfigRepo {
     private String repoURLHistory;
     private boolean hasUpdateAccess;
 
-    public GitConfigRepo(String repoURL) {
+    public GitRepo(String repoURL) {
         this.repoURL = Optional.ofNullable(baseURL).isPresent() ? baseURL + repoURL : repoURL;
     }
 
-    public GitConfigRepo(URI baseURL, String repoURL) {
+    public GitRepo(URI baseURL, String repoURL) {
         this.baseURL = baseURL;
         this.repoURL = repoURL;
     }
 
-    public GitConfigRepo(String repoURL, String branchName) {
+    public GitRepo(String repoURL, String branchName) {
         this.repoURL = repoURL;
         this.branchName = branchName;
     }

@@ -13,7 +13,7 @@ public class Application {
     OS operatingSystem;
     boolean justConfigure;
     Map<AppPathType, String> osConfigPaths;
-    GitConfigRepo gitConfigRepo;
+    GitRepo gitRepo;
 
     public Application withName(String name) {
         this.name = name;
@@ -37,8 +37,8 @@ public class Application {
         return this;
     }
 
-    public Application withGitConfigRepo(GitConfigRepo gitConfigRepo) {
-        this.gitConfigRepo = gitConfigRepo;
+    public Application withGitRepo(GitRepo gitRepo) {
+        this.gitRepo = gitRepo;
         return this;
     }
 

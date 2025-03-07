@@ -8,19 +8,11 @@ public class OSUtil {
 
     private static OS getGeneralOS() {
         String osName = getOSName();
-        if (osName.contains("window")) {
-            return OS.WINDOWS;
-        }
-        if (osName.contains("mac")) {
-            return OS.MACOS;
-        }
-        if (osName.contains("linux")) {
-            return OS.LINUX;
-        }
-        if (osName.contains("unix")) {
-            return OS.UNIX;
-        }
-        else return OS.valueOf("unknown".toUpperCase());
+        return osName.contains("window") ? OS.WINDOWS :
+                osName.contains("linux") ? OS.LINUX :
+                osName.contains("mac") ? OS.MACOS :
+                osName.contains("unix") ? OS.UNIX :
+                        OS.UNKNOWN;
     }
 
     private static String getOSName() {

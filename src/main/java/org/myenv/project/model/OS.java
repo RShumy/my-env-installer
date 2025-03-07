@@ -5,13 +5,11 @@ import lombok.Setter;
 
 public enum OS {
 
-    WINDOWS("windows"),
-    LINUX("linux"),
-    MACOS("macOS"),
-    UNIX("unix"),
-    UNKNOWN("unknown");
-
-    private final String name;
+    WINDOWS,
+    LINUX,
+    MACOS,
+    UNIX,
+    UNKNOWN;
 
     @Getter
     @Setter
@@ -20,14 +18,24 @@ public enum OS {
     @Getter
     @Setter
     private String shell;
-    
-    OS(String osName) {
-        this.name = osName;
-        this.packageManager = new PackageManager(this);
+
+    OS() {
+        switch (this) {
+            case WINDOWS -> this.withShell("cmd").withPackageManager(new PackageManager(this));
+            case LINUX,UNIX -> this.withShell("bash").withPackageManager(new PackageManager(this));
+            case MACOS -> this.withShell("zsh").withPackageManager(new PackageManager(this));
+            default -> this.shell = "unknown";
+        }
     }
 
-    public String toString() {
-        return name;
+    public OS withShell(String shell) {
+        this.shell = shell;
+        return this;
+    }
+
+    public OS withPackageManager(PackageManager packageManager) {
+        this.packageManager = packageManager;
+        return this;
     }
 
 }

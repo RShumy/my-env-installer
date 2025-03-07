@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.myenv.project.model.AppPathType;
 import org.myenv.project.model.Application;
-import org.myenv.project.model.GitConfigRepo;
+import org.myenv.project.model.GitRepo;
 import org.myenv.project.model.OS;
 
 import java.net.URI;
@@ -31,8 +31,8 @@ class ParseApplication {
                     parseAppPaths(jsonObject) )
                 : application;
         application = jsonObject.has("gitRepo") ?
-                application.withGitConfigRepo(
-                    new GitConfigRepo(gitBaseURL, jsonObject.getString("gitRepo")) )
+                application.withGitRepo(
+                    new GitRepo(gitBaseURL, jsonObject.getString("gitRepo")) )
                 : application;
         return application;
     }
