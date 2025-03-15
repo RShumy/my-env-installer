@@ -5,6 +5,7 @@ import lombok.Getter;
 
 public enum FlagType {
 
+    EMPTY(" "),
     SHORT("-"),
     DOUBLE("--"),
     SLASH("/");
@@ -15,7 +16,7 @@ public enum FlagType {
      * "-" -> short one char flag
      */
     @Getter
-    private String flagPrefix;
+    private final String flagPrefix;
 
     /** A string that will describe the character used to assign the value
      * "=" or ":" or " " -> space is considered default

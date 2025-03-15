@@ -1,7 +1,5 @@
 package org.myenv.project.model.commands;
 
-import com.sun.jdi.connect.Connector;
-
 import java.util.LinkedHashSet;
 
 public abstract class CommandAction {
@@ -23,7 +21,7 @@ public abstract class CommandAction {
     }
 
     CommandAction buildSimpleAction(CommandFlag flag){
-        //TODO: mull checks, ponder structure
+        //TODO: null checks, ponder structure
         this.finalAction = this.action + flag.getFinalFlag();
         return this;
     }

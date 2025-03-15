@@ -2,15 +2,19 @@ package org.myenv.project.model.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Setter;
 
-import java.util.LinkedHashSet;
+import java.util.HashMap;
 
 @AllArgsConstructor
 @Builder
 public abstract class Command {
 
     private String mainCommand;
-    private LinkedHashSet<CommandAction> actions;
-    
+    private HashMap<String, CommandAction> actions;
+
+    public Command(String mainCommand) {
+        this.mainCommand = mainCommand;
+    }
+
+
 }
