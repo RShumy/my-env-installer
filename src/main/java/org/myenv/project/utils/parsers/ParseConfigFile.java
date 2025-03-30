@@ -29,14 +29,11 @@ public class ParseConfigFile {
             .withGitBaseUrl(URI.create(jsonFile.getString("gitBaseURL")));
         JSONObject osJsonObject = jsonFile.getJSONObject("os");
         config
-            .withUser(osJsonObject.getJSONObject(osEnum.toString()).getString("user"))
+            .withUser(osJsonObject.getJSONObject(osEnum.getName()).getString("user"))
             .withApplications(
                 ParseApplication.parseApps( config.getGitBaseUrl(), config.getOperatingSystem(),
-                        osJsonObject.getJSONObject(osEnum.toString()).getJSONArray("applications")));
+                        osJsonObject.getJSONObject(osEnum.getName()).getJSONArray("applications")));
         return config;
     }
-
-
-
 
 }

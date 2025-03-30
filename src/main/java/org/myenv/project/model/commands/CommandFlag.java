@@ -1,14 +1,18 @@
 package org.myenv.project.model.commands;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static sun.util.locale.LocaleUtils.isEmpty;
 
-public abstract class CommandFlag {
+@AllArgsConstructor
+public class CommandFlag {
 
+    @Getter
     public String flag;
     public String description;
     private FlagType flagType;
@@ -17,39 +21,51 @@ public abstract class CommandFlag {
     @Getter
     private String finalFlag;
 
-    CommandFlag withFlag(String flag) {
+    public static CommandFlag flag() {
+        return new CommandFlag();
+    }
+
+    public static CommandFlag flag(String flag) {
+        return new CommandFlag().withFlag(flag);
+    }
+
+    public CommandFlag(){}
+
+    public CommandFlag withFlag(String flag) {
         this.flag = flag;
         return this;
     }
 
-    CommandFlag withFlagType(FlagType flagType) {
+    public CommandFlag withFlagType(FlagType flagType) {
         this.flagType = flagType;
         return this;
     }
 
-    CommandFlag withArgument(String argument) {
+    public CommandFlag withArgument(String argument) {
         this.argument = argument;
+        this.arguments = isNull(this.arguments) ? new String[]{argument} :
+                Stream.concat(Arrays.stream(this.arguments), Stream.of(argument)).toArray(String[]::new);
         return this;
     }
 
-    CommandFlag withDescription(String description) {
+     public CommandFlag withDescription(String description) {
         this.description = description;
         return this;
     }
 
-    CommandFlag withArguments(String... arguments) {
+     public CommandFlag withArguments(String... arguments) {
         this.arguments = arguments;
         return this;
     }
 
-    String buildFinalFlag() {
+     public String buildFinalFlag() {
         if (isEmpty(argument)) {
             this.finalFlag = appendFlag().toString();
         }
         return this.finalFlag;
     }
 
-    String buildFinalFlag(String argument) {
+     public String buildFinalFlag(String argument) {
         if (!isEmpty(argument))
             this.finalFlag = appendFlag()
                     .append(flagType.getValueAssigner())
@@ -58,8 +74,8 @@ public abstract class CommandFlag {
         return this.finalFlag;
     }
 
-    String buildFinalFlag(String... arguments) {
-        this.finalFlag = appendFlag().append(Arrays.stream(arguments).reduce(" ", (arg1, arg2) -> arg1 + " " + arg2 + " ")).toString();
+     public String buildFinalFlag(String... arguments) {
+        this.finalFlag = appendFlag().append(String.join(" ", arguments)).toString();
         return this.finalFlag;
     }
 
@@ -71,10 +87,8 @@ public abstract class CommandFlag {
         return new StringBuilder().append(flagType.getFlagPrefix());
     }
 
-    public static class EmptyFlag extends CommandFlag {
-        EmptyFlag() {
-            super.withFlagType(FlagType.EMPTY).buildFinalFlag();
-        }
+    public static CommandFlag emptyFlag() {
+            return new CommandFlag().withFlagType(FlagType.EMPTY);
     }
 
 }

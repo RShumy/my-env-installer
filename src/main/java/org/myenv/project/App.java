@@ -2,6 +2,7 @@ package org.myenv.project;
 
 import org.myenv.project.model.Config;
 import org.myenv.project.model.OS;
+import org.myenv.project.model.commands.git.Git;
 import org.myenv.project.utils.os.OSUtil;
 import org.myenv.project.utils.parsers.ParseConfigFile;
 
@@ -20,5 +21,7 @@ public class App {
         System.out.println(os.getPackageManager());
         System.out.println(os.getShell());
         System.out.println("Config Parsed :" + config);
+        System.out.println(config.getGitBaseUrl().toString());
+        System.out.println(Git.clone(config.getGitBaseUrl().toString()).get());
     }
 }

@@ -3,27 +3,24 @@ package org.myenv.project.model;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public enum OS {
 
-    WINDOWS,
-    LINUX,
-    MACOS,
-    UNIX,
-    UNKNOWN;
+    WINDOWS("windows"),
+    LINUX("linux"),
+    MACOS("macOS"),
+    UNIX("unix"),
+    UNKNOWN("unknown");
 
-    @Getter
-    @Setter
     private PackageManager packageManager;
 
-    @Getter
-    @Setter
     private String shell;
 
-    OS() {
-        switch (this) {
-            case WINDOWS -> this.withShell("cmd").withPackageManager(new PackageManager(this));
-            case LINUX,UNIX -> this.withShell("bash").withPackageManager(new PackageManager(this));
-            case MACOS -> this.withShell("zsh").withPackageManager(new PackageManager(this));
+    OS(String name) {
+        switch (name.toUpperCase()) {
+            case "WINDOWS" -> this.withShell("cmd").withPackageManager(new PackageManager(this));
+            case "LINUX","UNIX" -> this.withShell("bash").withPackageManager(new PackageManager(this));
+            case "MACOS" -> this.withShell("zsh").withPackageManager(new PackageManager(this));
             default -> this.shell = "unknown";
         }
     }
@@ -36,6 +33,10 @@ public enum OS {
     public OS withPackageManager(PackageManager packageManager) {
         this.packageManager = packageManager;
         return this;
+    }
+
+    public String getName(){
+        return this.name().toLowerCase();
     }
 
 }

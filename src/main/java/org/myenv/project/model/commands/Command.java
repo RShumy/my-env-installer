@@ -1,20 +1,34 @@
 package org.myenv.project.model.commands;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-
 import java.util.HashMap;
+import java.util.Map;
 
-@AllArgsConstructor
-@Builder
+
 public abstract class Command {
 
-    private String mainCommand;
-    private HashMap<String, CommandAction> actions;
+    private final String mainCommand;
+    private final HashMap<String, CommandAction> actions;
+    private String finalCommand;
 
     public Command(String mainCommand) {
         this.mainCommand = mainCommand;
+        this.actions = new HashMap<>(Map.of("empty", CommandAction.defaultEmptyAction()));
     }
+
+    public Command(String mainCommand, HashMap<String, CommandAction> actions) {
+        this(mainCommand);
+        this.actions.putAll(actions);
+    }
+
+    public <T extends Command> T action(CommandAction action) {
+        this.finalCommand = mainCommand + action.getFinalAction();
+        return (T) this;
+    }
+
+    public String get() {
+        return this.finalCommand;
+    }
+
 
 
 }
