@@ -1,13 +1,14 @@
 package org.myenv.project.model.commands;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
-import static sun.util.locale.LocaleUtils.isEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
 public class CommandFlag {
@@ -54,7 +55,8 @@ public class CommandFlag {
     }
 
      public CommandFlag withArguments(String... arguments) {
-        this.arguments = arguments;
+        if (!isEmpty(arguments))
+            this.arguments = arguments;
         return this;
     }
 
@@ -75,7 +77,8 @@ public class CommandFlag {
     }
 
      public String buildFinalFlag(String... arguments) {
-        this.finalFlag = appendFlag().append(String.join(" ", arguments)).toString();
+        if (!isEmpty(arguments))
+            this.finalFlag = appendFlag().append(String.join(" ", arguments)).toString();
         return this.finalFlag;
     }
 
