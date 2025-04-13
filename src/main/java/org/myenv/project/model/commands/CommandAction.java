@@ -1,11 +1,11 @@
 package org.myenv.project.model.commands;
 
-import lombok.Getter;
+import static org.myenv.project.model.commands.FlagType.EMPTY;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.myenv.project.model.commands.FlagType.EMPTY;
+import lombok.Getter;
 
 
 public class CommandAction {
@@ -44,6 +44,16 @@ public class CommandAction {
         return this;
     }
 
+    public CommandAction build(CommandFlag flag, String... arguments){
+        String flagString = flag.getFlag();
+        if (this.flags.containsKey(flagString)) {
+            this.finalAction = this.action + this.flags.get(flagString).getFinalFlag() + String.join(" ", arguments);
+            return this;
+        }
+        else 
+            return build(arguments);
+    }
+
     public CommandAction build(String... arguments){
         this.finalAction = this.action + " " + String.join(" ", arguments);
         return this;
@@ -64,5 +74,19 @@ public class CommandAction {
     public void buildCurrentFlag(){
         this.finalAction = this.action + currentFlag.getFinalFlag();
     }
+
+    public CommandAction buildCurrentFlag(String argument){
+       buildCurrentFlag();
+       this.finalAction = this.finalAction + argument;
+       return this;
+    }
+
+
+    public CommandAction buildCurrentFlag(String... arguments){
+       buildCurrentFlag();
+       this.finalAction = this.finalAction + " " + String.join(" ", arguments);
+       return this;
+    }
+
 
 }
