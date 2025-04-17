@@ -9,7 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import org.myenv.project.model.OS;
 import org.myenv.project.model.commands.Command;
 import org.myenv.project.model.commands.CommandAction;
 import org.myenv.project.utils.os.OSUtil;
@@ -23,17 +25,15 @@ public class Link extends Command {
 
     public static Link symbolic(String origin, String destination) {
         Path path = Paths.get(origin);
-        switch (OSUtil.os) {
-            case WINDOWS -> {
-                if (Files.isDirectory(path))
-                    return new Link().action(DIR.get().buildCurrentFlag(origin, destination));
-                else
-                    return new Link().action(FILE.get().build(origin, destination));
-            }
-            default -> {
-                return new Link().action(SYMBOLIC.get().build(origin, destination));
-            }
+
+        if (Objects.requireNonNull(OSUtil.os) == OS.WINDOWS) {
+            if (Files.isDirectory(path))
+                return new Link().action(DIR.get().build(destination, origin));
+            else
+                return new Link().action(FILE.get().build(destination, origin));
         }
+
+        return new Link().action(SYMBOLIC.get().build(origin, destination));
     }
 
     private static HashMap<String, CommandAction> osSpecificMap() {

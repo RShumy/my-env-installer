@@ -13,13 +13,13 @@ public enum LinkLinuxEntries {
 
     SYMBOLIC("s");
 
-    private CommandAction action;
+    private final CommandAction action;
 
     @Getter
     private final Map.Entry<String, CommandAction> entry;
     
     LinkLinuxEntries(String option) {
-        this.action = CommandAction.defaultEmptyAction()
+        this.action = CommandAction.emptyAction()
             .build(flag(option).withFlagType(FlagType.SHORT));
         this.entry = Map.entry(option, this.action);
     }

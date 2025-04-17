@@ -1,5 +1,6 @@
 package org.myenv.project.model.commands.link;
 
+import static org.myenv.project.model.commands.CommandAction.emptyAction;
 import static org.myenv.project.model.commands.CommandFlag.flag;
 
 import java.util.Map;
@@ -15,15 +16,15 @@ public enum LinkWindowsEntries {
     FILE(""),
     DIR("d");
 
-    private CommandAction action;
+    private final CommandAction action;
 
     @Getter
     private final Map.Entry<String, CommandAction> entry;
     
     LinkWindowsEntries(String option) {
 
-        this.action = StringUtils.isEmpty(option) ? CommandAction.defaultEmptyAction() :
-            CommandAction.defaultEmptyAction()
+        this.action = StringUtils.isEmpty(option) ? emptyAction() :
+            emptyAction()
             .build(flag(option).withFlagType(FlagType.SLASH));
         this.entry = Map.entry(option, this.action);
     }

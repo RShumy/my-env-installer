@@ -1,5 +1,6 @@
 package org.myenv.project.model.commands;
 
+import static java.util.Objects.isNull;
 import static org.myenv.project.model.commands.FlagType.EMPTY;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class CommandAction {
     private String finalAction;
 
     public CommandAction(String action) {
-        this.action = " " + action;
+        this.action = action;
     }
 
     public CommandAction(String action, HashMap<String, CommandFlag> flags) {
@@ -27,10 +28,14 @@ public class CommandAction {
         this.flags = flags;
     }
 
-    public static CommandAction defaultEmptyAction(){
+    public static CommandAction emptyAction(){
        return new CommandAction(" ", new HashMap<>(Map.ofEntries(
                Map.entry(EMPTY.name(), CommandFlag.emptyFlag())
        )));
+    }
+
+    public static CommandAction emptyAction(String argument){
+        return new CommandAction(" ", new HashMap<>()).build(argument);
     }
 
     public CommandAction putFlag(String name,CommandFlag flag){
@@ -40,7 +45,7 @@ public class CommandAction {
 
     public CommandAction build(String argument){
         //TODO: null checks, ponder structure
-        this.finalAction = this.action + " " + argument;
+        this.finalAction = String.join(" ", this.action.trim(), argument);
         return this;
     }
 
@@ -50,17 +55,16 @@ public class CommandAction {
             this.finalAction = this.action + this.flags.get(flagString).getFinalFlag() + String.join(" ", arguments);
             return this;
         }
-        else 
+        else
             return build(arguments);
     }
 
     public CommandAction build(String... arguments){
-        this.finalAction = this.action + " " + String.join(" ", arguments);
+        if ( !isNull(currentFlag) )
+            buildCurrentFlag(arguments);
+        else
+            this.finalAction = String.join(" ", this.action, String.join(" ", arguments).trim());
         return this;
-    }
-
-    public static CommandAction simpleAction(String argument){
-        return new CommandAction(" ", new HashMap<>(Map.ofEntries())).build(argument);
     }
 
     public CommandAction build(CommandFlag flag){
@@ -72,19 +76,19 @@ public class CommandAction {
     }
 
     public void buildCurrentFlag(){
-        this.finalAction = this.action + currentFlag.getFinalFlag();
+        this.finalAction = String.join(" ", this.action.trim(), currentFlag.buildFinalFlag().trim());
     }
 
     public CommandAction buildCurrentFlag(String argument){
        buildCurrentFlag();
-       this.finalAction = this.finalAction + argument;
+       this.finalAction = String.join(" ",this.finalAction, argument);
        return this;
     }
 
 
     public CommandAction buildCurrentFlag(String... arguments){
        buildCurrentFlag();
-       this.finalAction = this.finalAction + " " + String.join(" ", arguments);
+       this.finalAction = String.join(" ", finalAction.trim(), String.join(" ", arguments));
        return this;
     }
 

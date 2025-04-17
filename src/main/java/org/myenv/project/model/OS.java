@@ -1,7 +1,6 @@
 package org.myenv.project.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum OS {

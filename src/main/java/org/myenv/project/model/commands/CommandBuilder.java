@@ -11,5 +11,4 @@ public interface CommandBuilder<T extends Command> {
     T addActions(CommandAction commandAction);
     T addFlag(CommandFlag flag);
 
-
 }

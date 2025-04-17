@@ -2,7 +2,9 @@ package org.myenv.project;
 
 import org.myenv.project.model.Config;
 import org.myenv.project.model.OS;
+import org.myenv.project.model.commands.changedir.ChangeDir;
 import org.myenv.project.model.commands.git.Git;
+import org.myenv.project.model.commands.link.Link;
 import org.myenv.project.utils.os.OSUtil;
 import org.myenv.project.utils.parsers.ParseConfigFile;
 
@@ -23,5 +25,7 @@ public class App {
         System.out.println("Config Parsed :" + config);
         System.out.println(config.getGitBaseUrl().toString());
         System.out.println(Git.clone(config.getGitBaseUrl().toString()).get());
+        System.out.println(Link.symbolic("d:/JavaProjects", "d:/path/destination").get());
+        System.out.println(ChangeDir.changeDir("D:/JavaProjects").get());
     }
 }
