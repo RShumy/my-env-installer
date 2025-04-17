@@ -61,9 +61,10 @@ public class CommandFlag {
     }
 
      public String buildFinalFlag() {
-        if (isEmpty(argument)) {
+        if (isEmpty(argument))
             this.finalFlag = appendFlag().toString();
-        }
+        else
+            this.finalFlag = String.join(" ", appendFlag(), argument);
         return this.finalFlag;
     }
 

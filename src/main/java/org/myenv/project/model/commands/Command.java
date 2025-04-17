@@ -12,7 +12,7 @@ public abstract class Command {
 
     public Command(String mainCommand) {
         this.mainCommand = mainCommand;
-        this.actions = new HashMap<>(Map.of("empty", CommandAction.defaultEmptyAction()));
+        this.actions = new HashMap<>(Map.of("empty", CommandAction.emptyAction()));
     }
 
     public Command(String mainCommand, HashMap<String, CommandAction> actions) {
@@ -21,7 +21,7 @@ public abstract class Command {
     }
 
     public <T extends Command> T action(CommandAction action) {
-        this.finalCommand = mainCommand + action.getFinalAction();
+        this.finalCommand = String.join(" ",mainCommand , action.getFinalAction().trim());
         return (T) this;
     }
 
