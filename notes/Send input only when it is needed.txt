@@ -1,0 +1,37 @@
+// Send input only when it is needed
+    public static void main(String[] args) {
+        try {
+            // Start the process (Example: Running 'bash' or 'cmd' for interactive mode)
+            ProcessBuilder builder = new ProcessBuilder("cmd");
+            Process process = builder.start();
+
+            // Streams to interact with the process
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+
+            // Background thread to handle input reading
+            new Thread(() -> {
+                try {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println("OUTPUT: " + line); // Print process output
+
+                        // Detect when the process asks for input (customize based on expected output)
+                        if (line.contains("Enter your name:")) { // Example trigger
+                            System.out.println("Detected input request. Sending response...");
+                            writer.write("John Doe\n"); // Simulate user input
+                            writer.flush();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+            // Wait for process to complete
+            process.waitFor();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
