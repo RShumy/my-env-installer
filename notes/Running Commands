@@ -1,0 +1,48 @@
+Windows:
+    - Running elevated command in java:
+    Runtime.getRuntime().exec("runas /profile /user:Administrator \"cmd.exe /c Powrprof.dll,SetSuspendState\"");
+
+    - Poweshell:
+        - Update help/ manual pages:
+            Update-Help
+        - get all commands:
+            Get-Command -Type All
+    * Choco:
+        - get related installed package/application cli commands, and parse into a list:
+        ```
+           Get-Command -Type All | Out-File -FilePath .\Commands.txt
+           Select-String -Path .\Commands.txt -Pattern "<package-name>"
+       ```
+       Can slaso try below:
+       1. List Existing Files Before Installation
+       ```
+           $beforeBin = Get-ChildItem -Path "C:\ProgramData\chocolatey\bin" | Select-Object -ExpandProperty Name
+       ```
+       2. Install the Package
+       ```
+           choco install <package-name> -y
+       ```
+       3. List New Files After Installation
+       ```
+           $afterBin = Get-ChildItem -Path "C:\ProgramData\chocolatey\bin" | Select-Object -ExpandProperty Name
+       ```
+       4. Find the Difference
+       ```
+           $newBinFiles = Compare-Object -ReferenceObject $beforeBin -DifferenceObject $afterBin | Select-Object -ExpandProperty InputObject
+           $newBinFiles
+       ```
+       If any new executables appear, they are likely the CLI commands exposed by the package.
+Linux:
+    - Get all the commands that can be run by the shell, even after instalation of a new program:
+    print -rC1 -- ${(ko)commands}
+    - For advanced functionalities, check if the command trying to be run after a certain package is installed
+    is in the list of below commands:
+    ```
+        dpkg -L <package-name> | grep -E "/bin/|/sbin/|/usr/bin/|/usr/sbin/"
+        # OR
+        rpm -ql <package-name> | grep -E "/bin/|/sbin/|/usr/bin/|/usr/sbin/"
+    ```
+    Another alternative would be:
+    ```
+        man -k <package-name>
+    ```
