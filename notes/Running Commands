@@ -13,7 +13,7 @@ Windows:
            Get-Command -Type All | Out-File -FilePath .\Commands.txt
            Select-String -Path .\Commands.txt -Pattern "<package-name>"
        ```
-       Can slaso try below:
+       Can also try below:
        1. List Existing Files Before Installation
        ```
            $beforeBin = Get-ChildItem -Path "C:\ProgramData\chocolatey\bin" | Select-Object -ExpandProperty Name
@@ -33,7 +33,7 @@ Windows:
        ```
        If any new executables appear, they are likely the CLI commands exposed by the package.
 Linux:
-    - Get all the commands that can be run by the shell, even after instalation of a new program:
+    - Get all the commands that can be run by the shell, even after installation of a new program:
     print -rC1 -- ${(ko)commands}
     - For advanced functionalities, check if the command trying to be run after a certain package is installed
     is in the list of below commands:
