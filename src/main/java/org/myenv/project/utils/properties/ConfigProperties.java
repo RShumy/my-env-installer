@@ -1,6 +1,6 @@
 package org.myenv.project.utils.properties;
 
-import org.myenv.project.model.PackageManager;
+import org.myenv.project.model.commands.packagemanager.PackageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
