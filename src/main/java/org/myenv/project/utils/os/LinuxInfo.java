@@ -23,12 +23,12 @@ public class LinuxInfo {
             try (BufferedReader br = new BufferedReader(new FileReader("/etc/os-release"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.matches("^ID_LIKE")) {
+                    if (line.contains("ID_LIKE")) {
                         distroType = line.split("=")[1].trim();
                         System.out.println(line);
                     }
-                    runWhichYum();
                 }
+                runWhichYum();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -38,7 +38,9 @@ public class LinuxInfo {
     public static void runWhichYum() {
         try {
             // Start the process (Example: Running 'bash' or 'cmd' for interactive mode)
-            ProcessBuilder builder = new ProcessBuilder("which", "yum");
+            ProcessBuilder builder = new ProcessBuilder("bash", "-c", "which yum");
+            builder.redirectErrorStream(true);
+
             Process process = builder.start();
 
             // Streams to interact with the process
@@ -48,13 +50,12 @@ public class LinuxInfo {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println("OUTPUT: " + line); // Print process output
-
-                // Detect when the process asks for input (customize based on expected output)
             }
 
             // Wait for process to complete
             int exitCode = process.waitFor();
-            System.out.println("Exited with process code: " + exitCode);
+            if (exitCode == 1)
+                System.out.println("YUM not found !");
 
         } catch (Exception e) {
             e.printStackTrace();
