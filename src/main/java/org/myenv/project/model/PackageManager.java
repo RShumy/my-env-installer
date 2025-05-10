@@ -3,8 +3,6 @@ package org.myenv.project.model;
 import lombok.Data;
 import org.myenv.project.utils.properties.ConfigProperties;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 @Data
@@ -24,12 +22,6 @@ public class PackageManager {
         this.command = properties.getProperty(osName + ".cmd");
     }
 
-    private static HashMap<String, String> distroPackageManager = new HashMap<>(Map.ofEntries(
-            Map.entry("debian", "apt"),
-            Map.entry("suse", "zypper"),
-            Map.entry( "rhel", "dnf"),
-            Map.entry( "fedora", "dnf"),
-            Map.entry( "centos", "dnf")
-    ));
+
 
 }

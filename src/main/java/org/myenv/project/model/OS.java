@@ -2,10 +2,7 @@ package org.myenv.project.model;
 
 import lombok.Getter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
+import static org.myenv.project.utils.os.LinuxInfo.resolveDistroType;
 
 @Getter
 public enum OS {
@@ -16,15 +13,16 @@ public enum OS {
     UNIX("unix", ""),
     UNKNOWN("unknown", "");
 
-    private final String osName;
+    @Getter
+    private final String osTypeAndVersion;
 
     private PackageManager packageManager;
 
     private String shell;
 
-    OS(String name, String osName) {
+    OS(String name, String osType) {
 
-        this.osName = osName;
+        this.osTypeAndVersion = osType;
 
         switch (name.toUpperCase()) {
             /* TODO ? method for the user to choose the preferred Windows shell (cmd or powershell) */
@@ -50,29 +48,8 @@ public enum OS {
         this.packageManager = packageManager;
     }
 
-
-
     public String getName(){
         return this.name().toLowerCase();
-    }
-
-    // only in case of Linux
-    private final List<String> distroTypes = List.of("suse", "debian", "arch", "fedora", "centos", "rhel");
-
-
-    private static String resolveDistroType(){
-        String distroType = "";
-        try (BufferedReader br = new BufferedReader(new FileReader("/etc/os-release"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if(line.matches("^ID_LIKE"))
-                    distroType = line.split("=")[1].trim();
-                System.out.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return distroType;
     }
 
 }
