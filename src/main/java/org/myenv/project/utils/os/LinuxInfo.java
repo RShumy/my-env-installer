@@ -19,19 +19,20 @@ public class LinuxInfo {
 
     public static String resolveDistroType(){
         String distroType = "";
-        try (BufferedReader br = new BufferedReader(new FileReader("/etc/os-release"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.matches("^ID_LIKE")) {
-                    distroType = line.split("=")[1].trim();
-                    System.out.println(line);
+        if (System.getProperty("os.name").toLowerCase().contains("linux"))
+            try (BufferedReader br = new BufferedReader(new FileReader("/etc/os-release"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.matches("^ID_LIKE")) {
+                        distroType = line.split("=")[1].trim();
+                        System.out.println(line);
+                    }
+                    if (distroType.contains("rhel"))
+                        runWhichYum();
                 }
-                if (distroType.contains("rhel"))
-                    runWhichYum();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return distroType;
     }
 
