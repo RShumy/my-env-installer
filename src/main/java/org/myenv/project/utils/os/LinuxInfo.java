@@ -27,8 +27,7 @@ public class LinuxInfo {
                         distroType = line.split("=")[1].trim();
                         System.out.println(line);
                     }
-                    if (distroType.contains("rhel"))
-                        runWhichYum();
+                    runWhichYum();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -39,7 +38,7 @@ public class LinuxInfo {
     public static void runWhichYum() {
         try {
             // Start the process (Example: Running 'bash' or 'cmd' for interactive mode)
-            ProcessBuilder builder = new ProcessBuilder("which yum");
+            ProcessBuilder builder = new ProcessBuilder("which", "yum");
             Process process = builder.start();
 
             // Streams to interact with the process
@@ -54,7 +53,8 @@ public class LinuxInfo {
             }
 
             // Wait for process to complete
-            process.waitFor();
+            int exitCode = process.waitFor();
+            System.out.println("Exited with process code: " + exitCode);
 
         } catch (Exception e) {
             e.printStackTrace();
