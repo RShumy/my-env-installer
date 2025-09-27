@@ -2,16 +2,23 @@ package org.myenv.project.utils.os;
 
 import org.myenv.project.model.OS;
 
+import java.util.List;
+
 public class OSUtil {
+
+    public final static String WINDOWS = "windows";
+    public final static String LINUX = "linux";
+    public final static String MAC = "mac";
+    public final static String MACOS = "macOs";
+    public final static String UNIX = "unix";
 
     public static final OS os = getGeneralOS();
 
     private static OS getGeneralOS() {
-        String osName = getOSName();
-        return osName.contains("window") ? OS.WINDOWS :
-                osName.contains("linux") ? OS.LINUX :
-                osName.contains("mac") ? OS.MACOS :
-                osName.contains("unix") ? OS.UNIX :
+        return isWindows() ? OS.WINDOWS :
+                isLinux() ? OS.LINUX :
+                isMac() ? OS.MACOS :
+                isUnix() ? OS.UNIX :
                         OS.UNKNOWN;
     }
 
@@ -19,15 +26,16 @@ public class OSUtil {
         return System.getProperty("os.name").toLowerCase();
     }
 
-    private static boolean isWindows() {
-        return (os.toString().equals("windows"));
+    public static boolean isWindows(){
+        return getOSName().toLowerCase().contains(WINDOWS);
     }
-
-    private static boolean isMacOS() {
-        return (os.toString().equals("macOS"));
+    public static boolean isLinux(){
+        return getOSName().toLowerCase().contains(LINUX);
     }
-
-    private static boolean isLinux() {
-        return (os.toString().equals("linux"));
+    public static boolean isMac(){
+        return getOSName().toLowerCase().contains(MAC);
+    }
+    public static boolean isUnix(){
+        return getOSName().toLowerCase().contains(UNIX);
     }
 }
