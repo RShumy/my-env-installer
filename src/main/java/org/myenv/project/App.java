@@ -31,11 +31,11 @@ public class App {
         OS os = OSUtil.os;
         Config config = new ParseConfigFile(configFile).parseConfigFile();
         System.out.println(os);
-        System.out.println(os.getPackageManager());
+        System.out.println(os.getPackageManager().getPmName());
         System.out.println(os.getShell());
-        System.out.println("Config Parsed :" + config);
+        System.out.println("Config Parsed: " + config);
         System.out.println(config.getGitBaseUrl().toString());
         System.out.println(Git.clone(config.getGitBaseUrl().toString()).get());
-        System.out.println(ChangeDir.changeDir("D:/JavaProjects").get());
+        ChangeDir.changeDir("D:/JavaProjects").execute();
     }
 }
