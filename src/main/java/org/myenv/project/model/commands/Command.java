@@ -54,6 +54,11 @@ public abstract class Command {
                 // Print process output
                 System.out.println(line);
             }
+            // Capture error output (optional)
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println(line);
+            }
 
             // Wait for process to complete
             exitCode = process.waitFor();
