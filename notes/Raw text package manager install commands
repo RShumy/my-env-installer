@@ -1,3 +1,8 @@
+Repo Mapper to be added across package managers based on API:
+https://repology.org/api/v1/project/{canonical}
+example:
+https://repology.org/api/v1/project/httpd
+
 Chocolatey:
     cmd:
         @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"

@@ -2,8 +2,9 @@ package org.myenv.project;
 
 import org.myenv.project.model.Config;
 import org.myenv.project.model.OS;
-import org.myenv.project.model.commands.changedir.ChangeDir;
+import org.myenv.project.model.commands.filesystem.Directory;
 import org.myenv.project.model.commands.git.Git;
+import org.myenv.project.utils.PersistentProcess;
 import org.myenv.project.utils.os.OSUtil;
 import org.myenv.project.utils.parsers.ParseConfigFile;
 
@@ -13,7 +14,7 @@ import java.net.URISyntaxException;
 
 public class App {
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
         File jarFile = new File(App.class.getProtectionDomain()
                 .getCodeSource()
@@ -36,6 +37,8 @@ public class App {
         System.out.println("Config Parsed: " + config);
         System.out.println(config.getGitBaseUrl().toString());
         System.out.println(Git.clone(config.getGitBaseUrl().toString()).get());
-        ChangeDir.changeDir("D:/JavaProjects").execute();
+        Directory.changeDir("D:/JavaProjects").execute();
+        Directory.currentPath().execute();
+        PersistentProcess.getINSTANCE().close();
     }
 }

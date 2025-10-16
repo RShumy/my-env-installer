@@ -1,9 +1,11 @@
 package org.myenv.project.model.commands;
 
 import org.myenv.project.model.OS;
+import org.myenv.project.utils.PersistentProcess;
 import org.myenv.project.utils.os.OSUtil;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,8 @@ public abstract class Command {
     }
 
     public String execute() {
-        StringBuilder output = new StringBuilder();
+        return PersistentProcess.getINSTANCE().runCommand(finalCommand);
+/*        StringBuilder output = new StringBuilder();
         int exitCode = 0;
         try {
             // Start the process (Example: Running 'bash' or 'cmd' for interactive mode)
@@ -71,14 +74,12 @@ public abstract class Command {
             return "ERROR while running Command: " + finalCommand;
         else
             return output.toString();
+
+ */
     }
 
     public String get() {
         return this.finalCommand;
-    }
-
-    private String getShellCommandFlag() {
-       return os.isWindows() ? "/c" : "-c";
     }
 
 }
