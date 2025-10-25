@@ -30,44 +30,61 @@ public class PersistentProcess {
         }
     }
 
-    Process process;
-    BufferedReader reader;
-    BufferedWriter writer;
+    final Process process;
+    final BufferedReader reader;
+    final BufferedReader errorReader;
+    final BufferedWriter writer;
 
     private PersistentProcess(ProcessBuilder processBuilder) throws IOException {
         this.process = processBuilder.start();
+        this.errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
     }
 
-    public String runCommand(String command){
+    public String runCommand(String command) {
+//        String output = "";
+//        try {
+//            ReaderStringProducer reader = new ReaderStringProducer(command);
+//            Thread thread = new Thread(reader);
+//            thread.start();
+//            thread.join();
+//            output = reader.getOutput();
+//        }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return output;
+//
         StringBuilder output = new StringBuilder();
         try {
-            Thread.sleep(2000);
             System.out.println("Running command: " + command);
             writer.write(command + COMMAND_FINISH_CUE);
             writer.newLine(); // equivalent to pressing Enter
             writer.flush();
 
             String line;
+            String errorLine;
             while ((line = reader.readLine()) != null) {
                 if (line.matches(FINISH_CUE_PATTERN)) {
+                    break;
+                }
+                if ((errorLine = errorReader.readLine()) != null) {
+                    System.out.println(">" + errorLine);
                     break;
                 }
                 if (line.contains(command + COMMAND_FINISH_CUE) || line.equalsIgnoreCase("")) {
                     continue;
                 }
                 else {
-                output.append(line);
-                System.out.println("> " + line);
+                    output.append(line);
+                    System.out.println("> " + line);
                 }
             }
         }
         catch (IOException e) {
             System.out.println("Error while trying to run command process");
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
         return output.toString();
     }
@@ -94,30 +111,48 @@ public class PersistentProcess {
 
         @Setter
         @Getter
-        public String output;
+        private String output;
+
+        private String command;
+
+        ReaderStringProducer(String command) {
+            this.command = command;
+        }
 
         @Override
         public void run() {
+            runWithCommand(command);
+        }
+
+        private void runWithCommand(String command) {
             StringBuilder output = new StringBuilder();
-            String line;
             try {
-                while ( ( line = reader.readLine() ) != null) {
-                    if (line.contains(COMMAND_FINISH_CUE)) {
-                        System.out.println("--- Command finished successfully ---\n");
+                System.out.println("Running command: " + command);
+                writer.write(command + COMMAND_FINISH_CUE);
+                writer.newLine(); // equivalent to pressing Enter
+                writer.flush();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.matches(FINISH_CUE_PATTERN)) {
                         break;
                     }
-                    output.append(line);
-                    System.out.println("OUTPUT> " + line);
+                    if (line.contains(command + COMMAND_FINISH_CUE) || line.equalsIgnoreCase("")) {
+                        continue;
+                    }
+                    else {
+                        output.append(line);
+                        System.out.println("> " + line);
+                    }
                 }
             }
             catch (IOException e) {
+                System.out.println("Error while trying to run command process");
                 e.printStackTrace();
             }
+            this.output = output.toString();
         }
 
-//        private notifyProcess(String output){
-//
-//        }
     }
 
 

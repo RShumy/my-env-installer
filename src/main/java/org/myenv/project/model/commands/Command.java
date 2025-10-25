@@ -36,46 +36,6 @@ public abstract class Command {
 
     public String execute() {
         return PersistentProcess.getINSTANCE().runCommand(finalCommand);
-/*        StringBuilder output = new StringBuilder();
-        int exitCode = 0;
-        try {
-            // Start the process (Example: Running 'bash' or 'cmd' for interactive mode)
-            System.out.println("Running command: " + finalCommand);
-            ProcessBuilder builder = new ProcessBuilder(os.getShell(), getShellCommandFlag(), finalCommand);
-            builder.redirectErrorStream(true);
-
-            Process process = builder.start();
-
-            // Streams to interact with the process
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            // Background thread to handle input reading
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                output.append(line);
-                // Print process output
-                System.out.println(line);
-            }
-            // Capture error output (optional)
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = errorReader.readLine()) != null) {
-                System.err.println(line);
-            }
-
-            // Wait for process to complete
-            exitCode = process.waitFor();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (exitCode == 1)
-            return "ERROR while running Command: " + finalCommand;
-        else
-            return output.toString();
-
- */
     }
 
     public String get() {

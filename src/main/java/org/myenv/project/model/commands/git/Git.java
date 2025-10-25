@@ -31,7 +31,11 @@ public class Git extends Command {
     }
 
     public static Git clone(String gitRepo, String branch, String customPath){
+        String description = "-b flag stands for branch and enables choosing a specific branch when cloning";
         return new Git().action(CLONE.get().build(flag("b").withFlagType(SHORT).withArgument(gitRepo).withArgument(branch).withArgument(customPath)));
     }
 
+    public static Git clone(String gitRepo, String branch){
+        return clone(gitRepo, branch, "");
+    }
 }
