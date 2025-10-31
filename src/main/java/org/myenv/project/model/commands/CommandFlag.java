@@ -14,8 +14,8 @@ import lombok.Getter;
 public class CommandFlag {
 
     @Getter
-    public String flag;
-    public String description;
+    private String flag;
+    private String description;
     private FlagType flagType;
     private String argument;
     private String[] arguments;

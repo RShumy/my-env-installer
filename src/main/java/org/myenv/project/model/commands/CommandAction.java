@@ -8,7 +8,7 @@ import java.util.Map;
 
 import lombok.Getter;
 
-
+/** Stands for a terminal sub command that is passed to the main command */
 public class CommandAction {
 
     @Getter
@@ -34,61 +34,79 @@ public class CommandAction {
        )));
     }
 
-    public static CommandAction emptyAction(String argument){
-        return new CommandAction(" ", new HashMap<>()).build(argument);
+    /**
+     * Static argument() serves as a static instantiation of
+     * an empty CommandAction with only one argument that calls
+     * withArgument()
+     * @param argument that is being passed to the Command
+     * @return CommandAction
+     */
+    public static CommandAction argument(String argument){
+        return new CommandAction(" ", new HashMap<>()).withArgument(argument);
     }
 
     public CommandAction putFlag(String name,CommandFlag flag){
-        this.flags.put(name, flag);
+        flags.put(name, flag);
         return this;
     }
 
-    public CommandAction build(String argument){
-        //TODO: null checks, ponder structure
-        this.finalAction = String.join(" ", this.action.trim(), argument);
+    /** withArgument has the purpose to build the Action with a simple argument
+     * @param argument will be appended to the action string to compose the final action
+     *                 Ex: withArgument("anArgument")<br/>
+     *                 <code>finalAction = "action anArgument"<code/>
+     * @return CommandAction
+     */
+    public CommandAction withArgument(String argument){
+        if (isNull(argument)) {
+            throw new NullPointerException("Exception while building an command action, argument cannot be null");
+        }
+        finalAction = String.join(" ", action.trim(), argument);
         return this;
     }
 
-    public CommandAction build(CommandFlag flag, String... arguments){
+    public CommandAction withFlag(CommandFlag flag, String... arguments){
         String flagString = flag.getFlag();
-        if (this.flags.containsKey(flagString)) {
-            this.finalAction = this.action + this.flags.get(flagString).getFinalFlag() + String.join(" ", arguments);
+        if (flags.containsKey(flagString)) {
+            finalAction = action + flags.get(flagString).getFinalFlag() + String.join(" ", arguments);
             return this;
         }
         else
-            return build(arguments);
+            return withArguments(arguments);
     }
 
-    public CommandAction build(String... arguments){
+    public CommandAction withArguments(String... arguments){
         if ( !isNull(currentFlag) )
-            buildCurrentFlag(arguments);
+            return buildCurrentFlag(arguments);
         else
-            this.finalAction = String.join(" ", this.action, String.join(" ", arguments).trim());
+            finalAction = String.join(" ", action, String.join(" ", arguments).trim());
         return this;
     }
 
-    public CommandAction build(CommandFlag flag){
+    public CommandAction withFlag(CommandFlag flag){
         //TODO: null checks, ponder structure
-        this.currentFlag = flag;
-        this.putFlag(flag.getFlag(), flag);
-        buildCurrentFlag();
-        return this;
-    }
-
-    public void buildCurrentFlag(){
-        this.finalAction = String.join(" ", this.action.trim(), currentFlag.buildFinalFlag().trim());
+        currentFlag = flag;
+        return putFlag(flag.getFlag(), flag).buildCurrentFlag();
     }
 
     public CommandAction buildCurrentFlag(String argument){
        buildCurrentFlag();
-       this.finalAction = String.join(" ",this.finalAction, argument);
+       finalAction = String.join(" ",finalAction, argument);
        return this;
     }
 
+    private CommandAction buildCurrentFlag(){
+        if (isNull(finalAction)) {
+            finalAction = String.join(" ", action.trim(), currentFlag.buildFinalFlag().trim());
+        } else {
+            finalAction = String.join(" ", finalAction, currentFlag.buildFinalFlag());
+        }
+        return this;
+    }
 
-    public CommandAction buildCurrentFlag(String... arguments){
+
+    private CommandAction buildCurrentFlag(String... arguments){
        buildCurrentFlag();
-       this.finalAction = String.join(" ", finalAction.trim(), String.join(" ", arguments));
+       finalAction = String.join(" ", finalAction.trim(), String.join(" ", arguments));
        return this;
     }
 

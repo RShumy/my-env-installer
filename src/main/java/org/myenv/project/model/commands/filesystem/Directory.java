@@ -24,19 +24,18 @@ public class Directory extends Command {
         if (OSUtil.isWindows() &&
                 os.getShell().equals("cmd.exe") &&
                 path.matches(windowsDrivePath)) {
-            return new Directory().action(
-                        emptyAction().build(flag("d").withFlagType(FlagType.SLASH).withArgument(path)));
+            return new Directory().withAction(
+                        emptyAction().withFlag(flag("d").withFlagType(FlagType.SLASH).withArgument(path)));
         }
-        return new Directory().action(emptyAction(path));
+        return new Directory().withAction(argument(path));
     }
 
     public static Directory currentPath() {
-        OS os = OSUtil.os;
         if (OSUtil.isWindows()) {
-            return new Directory("cd").action(emptyAction().build());
+            return new Directory("cd").withAction(emptyAction().withArguments());
         }
         else {
-            return new Directory("pwd").action(emptyAction().build());
+            return new Directory("pwd").withAction(emptyAction().withArguments());
         }
     }
 }

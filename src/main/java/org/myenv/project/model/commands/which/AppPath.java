@@ -4,7 +4,7 @@ import org.myenv.project.model.OS;
 import org.myenv.project.model.commands.Command;
 import org.myenv.project.utils.os.OSUtil;
 
-import static org.myenv.project.model.commands.CommandAction.emptyAction;
+import static org.myenv.project.model.commands.CommandAction.argument;
 
 /**
  * Command to query if an application or program is installed
@@ -17,8 +17,8 @@ public class AppPath extends Command {
     }
 
     private static AppPath instance(String argument){
-        return new AppPath().action(emptyAction().build(argument));
-    };
+        return new AppPath().withAction(argument(argument));
+    }
 
     public static String ask(String application) {
         return AppPath.instance(application).execute();
