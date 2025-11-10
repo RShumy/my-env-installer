@@ -14,13 +14,13 @@ public class OSUtil {
 
     public static final OS os = getGeneralOS();
 
-    private static OS getGeneralOS() {
-        return isWindows() ? OS.WINDOWS :
-                isLinux() ? OS.LINUX :
-                isMac() ? OS.MACOS :
-                isUnix() ? OS.UNIX :
+            public static OS getGeneralOS(){
+                return isWindows() ? OS.WINDOWS :
+                        isLinux() ? OS.LINUX :
+                        isMac() ? OS.MACOS :
+                        isUnix() ? OS.UNIX :
                         OS.UNKNOWN;
-    }
+            }
 
     private static String getOSName() {
         return System.getProperty("os.name").toLowerCase();

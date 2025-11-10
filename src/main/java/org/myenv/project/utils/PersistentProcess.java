@@ -3,9 +3,13 @@ package org.myenv.project.utils;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.myenv.project.model.OS;
+import org.myenv.project.utils.os.OSUtil;
 
 import java.io.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static org.myenv.project.utils.os.OSUtil.os;
@@ -23,6 +27,7 @@ public class PersistentProcess {
 
     static {
         try {
+            OS os = OSUtil.getGeneralOS();
             INSTANCE = new PersistentProcess(new ProcessBuilder(os.getShell(), getShellCommandFlag()));
         } catch (IOException e) {
             System.out.println("Error while trying to instantiate terminal process");
@@ -32,28 +37,18 @@ public class PersistentProcess {
 
     final Process process;
     final BufferedReader reader;
+    final BufferedReader errorReader;
     final BufferedWriter writer;
 
     private PersistentProcess(ProcessBuilder processBuilder) throws IOException {
-        this.process = processBuilder.redirectErrorStream(true).start();
+        this.process = processBuilder.start();
+        this.errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
     }
 
-    public String runCommand(String command) {
-        String output = "";
-        try {
-            ReaderStringProducer reader = new ReaderStringProducer(command);
-            Thread thread = new Thread(reader);
-            thread.setDaemon(true);
-            thread.start();
-            thread.join();
-            output = reader.getOutput();
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return output;
+    public CompletableFuture<String> runCommand(String command) {
+        return CompletableFuture.supplyAsync(new ReaderStringProducer(command));
     }
 
     public void close() throws InterruptedException {
@@ -64,7 +59,7 @@ public class PersistentProcess {
 
     // these flags start a bare shell -> no info output at startup
     private static String getShellCommandFlag() {
-        return os.isWindows() ? "/k" : "--norc --noprofile";
+        return OSUtil.isWindows() ? "/k" : "--norc --noprofile";
     }
 
     // starting a process with this flag, runs just a single command then the shell process exits
@@ -74,13 +69,13 @@ public class PersistentProcess {
 
 
     //TODO : implement observer/callback pattern, to avoid blocking calls and run a separate thread when calling a command
-    private class ReaderStringProducer implements Runnable {
+    private class ReaderStringProducer implements Runnable, Supplier<String> {
 
         @Setter
         @Getter
         private String output;
 
-        private String command;
+        private final String command;
 
         ReaderStringProducer(String command) {
             this.command = command;
@@ -105,6 +100,10 @@ public class PersistentProcess {
                     if (line.matches(FINISH_CUE_PATTERN)) {
                         break;
                     }
+                    if ((errorLine = errorReader.readLine()) != null) {
+                        System.out.println(">" + errorLine);
+                        break;
+                    }
                     if (line.contains(command + COMMAND_FINISH_CUE) || line.equalsIgnoreCase("")) {
                         continue;
                     }
@@ -121,6 +120,11 @@ public class PersistentProcess {
             this.output = output.toString();
         }
 
+        @Override
+        public String get() {
+            runWithCommand(command);
+            return output;
+        }
     }
 
 

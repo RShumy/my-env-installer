@@ -4,6 +4,7 @@ import org.myenv.project.utils.PersistentProcess;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.Objects.isNull;
 
@@ -24,7 +25,7 @@ public abstract class Command {
         this.actions.putAll(actions);
     }
 
-    public String execute() {
+    public CompletableFuture<String> execute() {
         return PersistentProcess.getINSTANCE().runCommand(finalCommand);
     }
 

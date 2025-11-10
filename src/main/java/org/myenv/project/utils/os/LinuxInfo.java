@@ -5,6 +5,9 @@ import org.myenv.project.model.commands.which.AppPath;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class LinuxInfo {
 
@@ -41,11 +44,16 @@ public class LinuxInfo {
     }
 
     private static String resolveRedHatPM(){
-        if (resolveDistroType().contains("rhel") || resolveDistroType().contains("fedora")) {
-            if ( ! AppPath.ask("dnf").contains("ERROR") )
-                return "dnf";
-            if ( ! AppPath.ask("yum").contains("ERROR") )
+        try {
+            if (resolveDistroType().contains("rhel") || resolveDistroType().contains("fedora")) {
+                if ( !AppPath.ask("dnf").contains("ERROR") )
+                    return "dnf";
+            }
+            if ( !AppPath.ask("yum").contains("ERROR") )
                 return "yum";
+        }
+        catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
         return "dnf";
     }

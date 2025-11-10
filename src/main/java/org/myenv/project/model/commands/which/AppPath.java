@@ -4,6 +4,8 @@ import org.myenv.project.model.OS;
 import org.myenv.project.model.commands.Command;
 import org.myenv.project.utils.os.OSUtil;
 
+import java.util.concurrent.ExecutionException;
+
 import static org.myenv.project.model.commands.CommandAction.argument;
 
 /**
@@ -13,14 +15,14 @@ import static org.myenv.project.model.commands.CommandAction.argument;
 public class AppPath extends Command {
 
     private AppPath() {
-        super(OSUtil.os.equals(OS.WINDOWS) ? "where" : "which");
+        super(OSUtil.isWindows() ? "where" : "which");
     }
 
     private static AppPath instance(String argument){
         return new AppPath().withAction(argument(argument));
     }
 
-    public static String ask(String application) {
-        return AppPath.instance(application).execute();
+    public static String ask(String application) throws ExecutionException, InterruptedException {
+        return AppPath.instance(application).execute().get();
     }
 }
