@@ -1,5 +1,6 @@
 package org.myenv.project;
 
+import org.myenv.project.model.Application;
 import org.myenv.project.model.Config;
 import org.myenv.project.model.OS;
 import org.myenv.project.model.commands.filesystem.Directory;
@@ -32,12 +33,13 @@ public class App {
         OS os = OSUtil.os;
         Config config = new ParseConfigFile(configFile).parseConfigFile();
         System.out.println(os);
-        System.out.println(os.getPackageManager().getPmName());
         System.out.println(os.getShell());
         System.out.println("Config Parsed: " + config);
         System.out.println(config.getGitBaseUrl().toString());
         System.out.println(Git.clone(config.getGitBaseUrl().toString()).get());
-        Directory.changeDir("D:/JavaProjects").execute();
+        Directory.changeDir("D:/JavaProjects/MyEnvGitDemo").execute();
+        Application application = config.findApplicationByName("neovim");
+        Git.clone(application.getGitRepo().getRepoURL()).execute();
         Directory.currentPath().execute();
         PersistentProcess.getINSTANCE().close();
     }

@@ -53,4 +53,12 @@ public class Config {
         }
         return this;
     }
+
+    public Application findApplicationByName(String name){
+        Application searched = new Application();
+        if (!this.applications.isEmpty()) {
+            searched = this.applications.stream().filter(application -> application.getName().equalsIgnoreCase(name)).findFirst().orElse(searched);
+        }
+        return searched;
+    }
 }

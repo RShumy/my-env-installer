@@ -19,7 +19,7 @@ public class PersistentProcess {
 
     private static final String FINISH_CUE_STRING = "_COMMAND_FINISHED_WRITING_TO_TERMINAL_";
     private static final String FINISH_CUE_PATTERN ="^" + FINISH_CUE_STRING + "$";
-    private static final String COMMAND_FINISH_CUE = " && echo " + FINISH_CUE_STRING;
+    private static final String COMMAND_FINISH_CUE = " & echo " + FINISH_CUE_STRING;
 
     static {
         try {
@@ -32,64 +32,31 @@ public class PersistentProcess {
 
     final Process process;
     final BufferedReader reader;
-    final BufferedReader errorReader;
     final BufferedWriter writer;
 
     private PersistentProcess(ProcessBuilder processBuilder) throws IOException {
-        this.process = processBuilder.start();
-        this.errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        this.process = processBuilder.redirectErrorStream(true).start();
         this.reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
     }
 
     public String runCommand(String command) {
-//        String output = "";
-//        try {
-//            ReaderStringProducer reader = new ReaderStringProducer(command);
-//            Thread thread = new Thread(reader);
-//            thread.start();
-//            thread.join();
-//            output = reader.getOutput();
-//        }
-//        catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return output;
-//
-        StringBuilder output = new StringBuilder();
+        String output = "";
         try {
-            System.out.println("Running command: " + command);
-            writer.write(command + COMMAND_FINISH_CUE);
-            writer.newLine(); // equivalent to pressing Enter
-            writer.flush();
-
-            String line;
-            String errorLine;
-            while ((line = reader.readLine()) != null) {
-                if (line.matches(FINISH_CUE_PATTERN)) {
-                    break;
-                }
-                if ((errorLine = errorReader.readLine()) != null) {
-                    System.out.println(">" + errorLine);
-                    break;
-                }
-                if (line.contains(command + COMMAND_FINISH_CUE) || line.equalsIgnoreCase("")) {
-                    continue;
-                }
-                else {
-                    output.append(line);
-                    System.out.println("> " + line);
-                }
-            }
+            ReaderStringProducer reader = new ReaderStringProducer(command);
+            Thread thread = new Thread(reader);
+            thread.setDaemon(true);
+            thread.start();
+            thread.join();
+            output = reader.getOutput();
         }
-        catch (IOException e) {
-            System.out.println("Error while trying to run command process");
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return output.toString();
+        return output;
     }
 
-    public void close() throws IOException, InterruptedException {
+    public void close() throws InterruptedException {
         Thread.sleep(2000L); // give time for output
         runCommand("exit");
         process.waitFor();
@@ -133,6 +100,7 @@ public class PersistentProcess {
                 writer.flush();
 
                 String line;
+                String errorLine;
                 while ((line = reader.readLine()) != null) {
                     if (line.matches(FINISH_CUE_PATTERN)) {
                         break;

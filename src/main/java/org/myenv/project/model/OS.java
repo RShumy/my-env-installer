@@ -17,8 +17,6 @@ public enum OS {
 
     private final String osTypeAndVersion;
 
-    private PackageManager packageManager;
-
     private String shell;
 
     OS(String name, String osType) {
@@ -28,14 +26,11 @@ public enum OS {
         switch (name) {
             /* TODO ? method for the user to choose the preferred Windows shell (cmd or powershell) */
             case OSUtil.WINDOWS ->
-                this.withShell("cmd.exe")
-                    .withPackageManager(new PackageManager(this));
+                this.withShell("cmd.exe");
             case OSUtil.LINUX, OSUtil.UNIX ->
-                this.withShell("bash")
-                        .withPackageManager(new PackageManager(this));
+                this.withShell("bash");
             case OSUtil.MACOS ->
-                this.withShell("zsh")
-                    .withPackageManager(new PackageManager(this));
+                this.withShell("zsh");
             default ->
                 this.shell = "unknown";
         }
@@ -44,10 +39,6 @@ public enum OS {
     public OS withShell(String shell) {
         this.shell = shell;
         return this;
-    }
-
-    public void withPackageManager(PackageManager packageManager) {
-        this.packageManager = packageManager;
     }
 
     public String getName(){

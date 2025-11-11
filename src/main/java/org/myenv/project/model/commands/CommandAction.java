@@ -45,7 +45,8 @@ public class CommandAction {
         return new CommandAction(" ", new HashMap<>()).withArgument(argument);
     }
 
-    public CommandAction putFlag(String name,CommandFlag flag){
+    public CommandAction putFlag(String name, CommandFlag flag){
+        if (isNull(flags)) flags = new HashMap<>();
         flags.put(name, flag);
         return this;
     }
@@ -66,8 +67,9 @@ public class CommandAction {
 
     public CommandAction withFlag(CommandFlag flag, String... arguments){
         String flagString = flag.getFlag();
+        putFlag(flagString, flag);
         if (flags.containsKey(flagString)) {
-            finalAction = action + flags.get(flagString).getFinalFlag() + String.join(" ", arguments);
+            finalAction = String.join(" ",action, flag.buildFinalFlag(arguments));
             return this;
         }
         else
@@ -83,14 +85,13 @@ public class CommandAction {
     }
 
     public CommandAction withFlag(CommandFlag flag){
-        //TODO: null checks, ponder structure
         currentFlag = flag;
         return putFlag(flag.getFlag(), flag).buildCurrentFlag();
     }
 
     public CommandAction buildCurrentFlag(String argument){
        buildCurrentFlag();
-       finalAction = String.join(" ",finalAction, argument);
+       finalAction = String.join(" ", finalAction, argument);
        return this;
     }
 

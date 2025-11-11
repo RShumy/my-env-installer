@@ -20,7 +20,7 @@ public class GitRepo {
 
     public GitRepo(URI baseURL, String repoURL) {
         this.baseURL = baseURL;
-        this.repoURL = repoURL;
+        this.repoURL = Optional.ofNullable(baseURL).isPresent() ? baseURL + repoURL : repoURL;
     }
 
     public GitRepo(String repoURL, String branchName) {

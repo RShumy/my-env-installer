@@ -79,7 +79,7 @@ public class CommandFlag {
 
      public String buildFinalFlag(String... arguments) {
         if (!isEmpty(arguments))
-            this.finalFlag = appendFlag().append(String.join(" ", arguments)).toString();
+            this.finalFlag = appendFlag().append(" ").append(String.join(" ", arguments)).toString();
         return this.finalFlag;
     }
 
